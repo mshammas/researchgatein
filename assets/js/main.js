@@ -12,6 +12,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Chat history storage
     let chatHistory = [];
     
+    // Current research session
+    let currentSession = {
+        currentQuestionIndex: 0,
+        answers: {},
+        isCollectingAnswers: false
+    };
+    
+    // Research questions to ask
+    const researchQuestions = [
+        "What is the main topic or question you want to research?",
+        "What specific aspects or subtopics are you interested in? (e.g., trends, history, comparisons, implications)",
+        "What is your goal or intended use for this research? (e.g., write a paper, make a decision, general understanding)",
+        "Do you have a preferred time range for the information? (e.g., last 5 years, historical overview, upcoming developments)",
+        "What level of depth are you looking for? (e.g., summary, in-depth analysis, expert-level)",
+        "Are there any specific regions, industries, or demographics you'd like to focus on?",
+        "What format do you prefer for the results? (e.g., structured report, comparison table, bullet points)",
+        "Are there any sources you trust or want me to prioritize or avoid?",
+        "What language should the results be in?"
+    ];
+    
     // Check for saved chat history in localStorage
     loadChatHistory();
     
@@ -48,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     /**
-     * Send a message to the assistant
+     * Process user input and move to next step of conversation
      */
     function sendMessage() {
         const message = chatInput.value.trim();
@@ -72,64 +92,221 @@ document.addEventListener('DOMContentLoaded', function() {
         chatInput.style.height = 'auto';
         sendButton.disabled = true;
         
-        // Check if this is the first message - if so, we'll request email after this
-        const isFirstMessage = chatHistory.filter(msg => msg.role === 'user').length === 1;
-        
-        if (isFirstMessage) {
-            // Show email collection prompt after a short delay
-            setTimeout(() => {
-                requestEmailAddress(message);
-            }, 1000);
-        } else {
-            // For subsequent messages, use the existing flow
-            // Show loading indicator
-            loadingMessage.style.display = 'flex';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Process the message based on current state
+        processUserMessage(message);
+    }
+    
+    /**
+     * Process user message based on current conversation state
+     * @param {string} message - The user's message
+     */
+    function processUserMessage(message) {
+        // If currently collecting answers for research questions
+        if (currentSession.isCollectingAnswers) {
+            // Store the answer to the current question
+            const questionKey = `question${currentSession.currentQuestionIndex}`;
+            currentSession.answers[questionKey] = message;
             
-            // Make API request to get response
-            fetchAssistantResponse(message);
+            // Move to the next question or finish the questionnaire
+            currentSession.currentQuestionIndex++;
+            
+            if (currentSession.currentQuestionIndex < researchQuestions.length) {
+                // Ask the next question
+                setTimeout(() => {
+                    askResearchQuestion(currentSession.currentQuestionIndex);
+                }, 500);
+            } else {
+                // All questions answered, now request email
+                setTimeout(() => {
+                    requestEmailAddress(currentSession.answers);
+                }, 500);
+                
+                // Reset the question index but keep collecting flag true until email is provided
+                currentSession.currentQuestionIndex = 0;
+            }
+        } else {
+            // If not currently in a questionnaire, start a new one
+            startNewResearchSession();
         }
     }
     
     /**
-     * Fetch a response from the assistant API
-     * @param {string} message - The user's message
+     * Start a new research questionnaire session
      */
-    async function fetchAssistantResponse(message) {
+    function startNewResearchSession() {
+        // Reset the session data
+        currentSession = {
+            currentQuestionIndex: 0,
+            answers: {},
+            isCollectingAnswers: true
+        };
+        
+        // Show welcome message and explanation
+        const welcomeMessage = `
+            Thank you for choosing ResearchGate.in! To provide you with the most comprehensive and relevant research information, I'll ask you a series of 9 questions to understand your needs better.
+            
+            This structured approach helps us collect all necessary details to deliver high-quality research tailored to your specific requirements. After completing these questions, you'll be asked for your email address where we'll send our findings within 24-48 hours.
+            
+            Let's begin with the first question:
+        `;
+        
+        addMessage(welcomeMessage, 'assistant');
+        
+        // Ask the first question after a short delay
+        setTimeout(() => {
+            askResearchQuestion(0);
+        }, 1000);
+    }
+    
+    /**
+     * Ask a specific research question
+     * @param {number} questionIndex - Index of the question to ask
+     */
+    function askResearchQuestion(questionIndex) {
+        if (questionIndex < researchQuestions.length) {
+            const questionNumber = questionIndex + 1;
+            const questionMessage = `Question ${questionNumber}/9: ${researchQuestions[questionIndex]}`;
+            addMessage(questionMessage, 'assistant');
+        }
+    }
+    
+    /**
+     * Request email address from the user
+     * @param {Object} researchData - Collected research question answers
+     */
+    function requestEmailAddress(researchData) {
+        // Add the email request message
+        const emailRequestMessage = `
+            Thank you for providing all the information! To complete your research request, please provide your email address where we can send our comprehensive findings:
+            <div class="email-collection-form" id="email-form">
+                <input type="email" id="email-input" placeholder="Your email address" class="email-input">
+                <button id="submit-email" class="submit-email-button">Submit</button>
+            </div>
+        `;
+        
+        addMessage(emailRequestMessage, 'assistant');
+        
+        // Set up email submission handler
+        setTimeout(() => {
+            const emailInput = document.getElementById('email-input');
+            const submitEmailButton = document.getElementById('submit-email');
+            
+            if (emailInput && submitEmailButton) {
+                emailInput.focus();
+                
+                submitEmailButton.addEventListener('click', () => {
+                    submitResearchRequest(researchData, emailInput.value);
+                });
+                
+                emailInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        submitResearchRequest(researchData, emailInput.value);
+                    }
+                });
+            }
+        }, 100);
+    }
+    
+    /**
+     * Submit the research request with email
+     * @param {Object} researchData - Collected research question answers
+     * @param {string} email - The user's email address
+     */
+    function submitResearchRequest(researchData, email) {
+        if (!email || !email.includes('@') || !email.includes('.')) {
+            alert('Please enter a valid email address');
+            return;
+        }
+        
+        // Remove the email form
+        const emailForm = document.getElementById('email-form');
+        if (emailForm) {
+            emailForm.remove();
+        }
+        
+        // Show loading message
+        addMessage("Submitting your research request...", "assistant");
+        
+        // Prepare the data for submission
+        const submissionData = {
+            email: email,
+            timestamp: new Date().toISOString(),
+            questions: researchQuestions,
+            answers: researchData
+        };
+        
+        // End the current research session
+        currentSession.isCollectingAnswers = false;
+        
+        // Send data to backend
+        sendQueryToBackend(submissionData)
+            .then(() => {
+                // Show confirmation message
+                const confirmationMessage = `
+                    Thank you! We've received your research request and will send our findings to ${email} within 24-48 hours.
+                    
+                    Here's a summary of your request:
+                    - Main topic: ${researchData.question0}
+                    - Intended use: ${researchData.question2}
+                    - Depth level: ${researchData.question4}
+                    
+                    Feel free to submit another research query if you have additional questions!
+                `;
+                
+                addMessage(confirmationMessage, 'assistant');
+            })
+            .catch(error => {
+                console.error('Error submitting research request:', error);
+                
+                // Show error message
+                addMessage(
+                    'Sorry, we encountered an issue submitting your query. Please try again or contact support at info@researchgate.in',
+                    'assistant'
+                );
+            });
+    }
+    
+    /**
+     * Send the query data to the backend
+     * @param {Object} submissionData - The full research data to submit
+     * @returns {Promise} - Promise resolving to the API response
+     */
+    async function sendQueryToBackend(submissionData) {
         try {
-            // In production, replace this with actual API call to ChatGPT
-            // This is a simulated API call for demonstration
+            // API endpoint - replace with your actual backend URL in production
+            const apiUrl = 'https://researchgatein-backend.onrender.com/api/submit-query';
             
-            // Simulate network delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // Get simulated response
-            const response = getSimulatedResponse(message);
-            
-            // Hide loading indicator
-            loadingMessage.style.display = 'none';
-            
-            // Add assistant response to chat
-            addMessage(response, 'assistant');
-            
-            // Save to chat history
-            chatHistory.push({
-                role: 'assistant',
-                content: response,
-                timestamp: new Date().toISOString()
+            // Send the request to the backend
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(submissionData)
             });
             
-            // Save chat history to localStorage
-            saveChatHistory();
+            const data = await response.json();
             
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to submit query');
+            }
+            
+            console.log('Research query submitted successfully:', data);
+            
+            // Store the queryId in localStorage for future reference
+            const queryHistory = JSON.parse(localStorage.getItem('queryHistory') || '[]');
+            queryHistory.push({
+                id: data.queryId,
+                mainQuery: submissionData.answers.question0,
+                email: submissionData.email,
+                timestamp: submissionData.timestamp
+            });
+            localStorage.setItem('queryHistory', JSON.stringify(queryHistory));
+            
+            return data;
         } catch (error) {
-            console.error('Error fetching assistant response:', error);
-            
-            // Hide loading indicator
-            loadingMessage.style.display = 'none';
-            
-            // Show error message
-            addMessage('Sorry, I encountered an error processing your request. Please try again.', 'assistant');
+            console.error('Error submitting research query:', error);
+            throw error;
         }
     }
     
@@ -183,6 +360,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Save to chat history if it's an assistant message
+        if (sender === 'assistant') {
+            chatHistory.push({
+                role: 'assistant',
+                content: content,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Save chat history to localStorage
+            saveChatHistory();
+        }
     }
     
     /**
@@ -202,154 +391,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             // Italic text with *
             .replace(/\*(.*?)\*/g, '<em>$1</em>');
-    }
-    
-    /**
-     * Request email address from the user
-     * @param {string} query - The research query submitted
-     */
-    function requestEmailAddress(query) {
-        // Add the email request message
-        const emailRequestMessage = `
-            Thank you for your research query. To provide you with a thorough response, our team will need some time to research this topic. 
-            Please provide your email address so we can send you our comprehensive findings:
-            <div class="email-collection-form" id="email-form">
-                <input type="email" id="email-input" placeholder="Your email address" class="email-input">
-                <button id="submit-email" class="submit-email-button">Submit</button>
-            </div>
-        `;
-        
-        addMessage(emailRequestMessage, 'assistant');
-        
-        // Set up email submission handler
-        setTimeout(() => {
-            const emailInput = document.getElementById('email-input');
-            const submitEmailButton = document.getElementById('submit-email');
-            
-            if (emailInput && submitEmailButton) {
-                emailInput.focus();
-                
-                submitEmailButton.addEventListener('click', () => {
-                    submitResearchRequest(query, emailInput.value);
-                });
-                
-                emailInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        submitResearchRequest(query, emailInput.value);
-                    }
-                });
-            }
-        }, 100);
-    }
-    
-    /**
-     * Submit the research request with email
-     * @param {string} query - The research query
-     * @param {string} email - The user's email address
-     */
-    function submitResearchRequest(query, email) {
-        if (!email || !email.includes('@') || !email.includes('.')) {
-            alert('Please enter a valid email address');
-            return;
-        }
-        
-        // Remove the email form
-        const emailForm = document.getElementById('email-form');
-        if (emailForm) {
-            emailForm.remove();
-        }
-        
-        // Show confirmation message
-        const confirmationMessage = `
-            Thank you! We've received your research query and will send our findings to ${email} within 24-48 hours. 
-            Feel free to submit additional questions or details that might help with our research.
-        `;
-        
-        addMessage(confirmationMessage, 'assistant');
-        
-        // Here you would send the query and email to your backend
-        sendQueryToBackend(query, email);
-    }
-    
-    /**
-     * Send the query and email to the backend
-     * @param {string} query - The research query
-     * @param {string} email - The user's email address
-     */
-    async function sendQueryToBackend(query, email) {
-        try {
-            // API endpoint - replace with your actual backend URL in production
-            // const apiUrl = 'http://localhost:3000/api/submit-query'; // For local testing
-            const apiUrl = 'https://researchgatein-backend.onrender.com/api/submit-query'; // render.com web service
-            // const apiUrl = 'https://api.researchgate.in/api/submit-query'; // For production
-            
-            // Send the request to the backend
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ query, email })
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to submit query');
-            }
-            
-            console.log('Research query submitted successfully:', data);
-            
-            // You can store the queryId in localStorage for future reference if needed
-            const queryHistory = JSON.parse(localStorage.getItem('queryHistory') || '[]');
-            queryHistory.push({
-                id: data.queryId,
-                query,
-                email,
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem('queryHistory', JSON.stringify(queryHistory));
-            
-        } catch (error) {
-            console.error('Error submitting research query:', error);
-            
-            // Show error message to user
-            addMessage(
-                'Sorry, we encountered an issue submitting your query. Please try again or contact support.',
-                'assistant'
-            );
-        }
-    }
-    
-    /**
-     * Get a simulated response
-     * @param {string} message - The user's message
-     * @returns {string} - A simulated response
-     */
-    function getSimulatedResponse(message) {
-        // This is just a simple simulation for demonstration
-        // In production, this would be replaced with a real API call
-        
-        const lowerMessage = message.toLowerCase();
-        
-        // Check for specific keywords to provide more relevant responses
-        if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-            return "Hello! I'm your research assistant. How can I help with your research today?";
-        }
-        
-        if (lowerMessage.includes('help')) {
-            return "I'd be happy to help! I can assist with research questions, literature reviews, methodology explanations, data analysis insights, and more. What specific area are you researching?";
-        }
-        
-        // Default responses
-        const responses = [
-            "Based on recent research, this topic has shown significant developments in the field. Several studies have highlighted the importance of considering multiple perspectives when examining this subject.",
-            "According to academic literature, there are various approaches to this question. Some researchers argue for one perspective, while others present alternative viewpoints. The consensus seems to be evolving as more data becomes available.",
-            "This is an interesting research question! The literature suggests that there are multiple factors to consider. Would you like me to focus on any specific aspect of this topic?",
-            "From a research perspective, this question touches on several disciplines. The interdisciplinary nature of this topic makes it particularly rich for exploration. Would you like me to elaborate on any particular area?"
-        ];
-        
-        return responses[Math.floor(Math.random() * responses.length)];
     }
     
     /**
@@ -387,11 +428,18 @@ document.addEventListener('DOMContentLoaded', function() {
         welcomeMessage.className = 'welcome-message';
         welcomeMessage.innerHTML = `
             <div class="welcome-title">Welcome to ResearchGate.in</div>
-            <p>Ask me any research question, and I'll provide you with accurate, well-structured information.</p>
-            <p>Try questions about scientific topics, historical events, literature reviews, methodologies, or any other research area you're interested in.</p>
+            <p>Ask me any research question, and I'll help guide you through our research process to provide you with comprehensive information.</p>
+            <p>Try asking about scientific topics, historical events, methodologies, or any other research area you're interested in.</p>
         `;
         
         chatMessages.insertBefore(welcomeMessage, loadingMessage);
+        
+        // Reset the current session
+        currentSession = {
+            currentQuestionIndex: 0,
+            answers: {},
+            isCollectingAnswers: false
+        };
         
         // Clear chat history
         chatHistory = [];
