@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="About ResearchGate.in - Learn about our AI-powered research assistant">
+    <meta name="keywords" content="about, research assistant, AI research, academic research, research tool">
+    <meta name="author" content="ResearchGate.in">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="About ResearchGate.in">
+    <meta property="og:description" content="Learn about our AI-powered research assistant">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://researchgate.in/about">
+    <meta property="og:image" content="https://researchgate.in/assets/images/og-image.jpg">
+    
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="About ResearchGate.in">
+    <meta name="twitter:description" content="Learn about our AI-powered research assistant">
+    <meta name="twitter:image" content="https://researchgate.in/assets/images/twitter-image.jpg">
+    
+    <title>About - ResearchGate.in</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
+    
+    <!-- Preload fonts for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    
+    <style>
+        /* About page specific styles */
+        .about-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .about-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .about-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .about-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .about-text {
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+        
+        .mission-vision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .mission, .vision {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .feature-item {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .team-member {
+            text-align: center;
+        }
+        
+        .team-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--bg-secondary);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .team-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .team-role {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .back-to-home {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .back-to-home:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .mission-vision {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="../index.html">
+                <img src="../assets/images/logo.svg" alt="ResearchGate.in Logo">
+                <span>ResearchGate.in</span>
+            </a>
+        </div>
+        <div class="header-actions">
+            <a href="../index.html" class="icon-button" aria-label="Back to Chat">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="about-container">
+            <h1 class="about-title">About ResearchGate.in</h1>
+            
+            <section class="about-section">
+                <p class="about-text">
+                    ResearchGate.in is an AI-powered research assistant designed to provide instant, accurate responses to academic and research queries. Our platform leverages cutting-edge AI technology to help researchers, students, academics, and curious minds access information quickly and efficiently.
+                </p>
+                
+                <div class="mission-vision">
+                    <div class="mission">
+                        <h3 class="section-title">Our Mission</h3>
+                        <p>To democratize access to knowledge and research by providing an intelligent, accessible, and user-friendly research assistant for everyone.</p>
+                    </div>
+                    
+                    <div class="vision">
+                        <h3 class="section-title">Our Vision</h3>
+                        <p>A world where quality research assistance is available to anyone, anytime, accelerating discovery and learning across all fields of knowledge.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="about-section">
+                <h2 class="section-title">What We Offer</h2>
+                <p class="about-text">
+                    ResearchGate.in provides an intuitive chat interface where you can ask questions about virtually any research topic. Our AI assistant processes your query and delivers concise, well-structured information based on reliable sources.
+                </p>
+                
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h3 class="feature-title">Instant Research Assistance</h3>
+                        <p>Get immediate answers to your research questions without having to sift through countless search results.</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <h3 class="feature-title">Multidisciplinary Knowledge</h3>
+                        <p>Our assistant is trained across academic disciplines, from humanities to sciences, history to cutting-edge technology.</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <h3 class="feature-title">Structured Information</h3>
+                        <p>Receive well-organized, clear information that helps you understand complex topics more easily.</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <h3 class="feature-title">No Registration Required</h3>
+                        <p>Start using our research assistant immediately without the need to create an account or provide personal information.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="about-section">
+                <h2 class="section-title">Our Team</h2>
+                <p class="about-text">
+                    ResearchGate.in was created by a group of researchers, technologists, and educators passionate about making knowledge more accessible.
+                </p>
+                
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-photo">JD</div>
+                        <h3 class="team-name">John Doe</h3>
+                        <p class="team-role">Founder & AI Researcher</p>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="team-photo">JS</div>
+                        <h3 class="team-name">Jane Smith</h3>
+                        <p class="team-role">UX Designer</p>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="team-photo">RB</div>
+                        <h3 class="team-name">Robert Brown</h3>
+                        <p class="team-role">Full-Stack Developer</p>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div class="team-photo">AP</div>
+                        <h3 class="team-name">Alice Parker</h3>
+                        <p class="team-role">Content Specialist</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="about-section">
+                <h2 class="section-title">How It Works</h2>
+                <p class="about-text">
+                    ResearchGate.in utilizes advanced AI technology to provide research assistance. When you submit a query, our system processes it using natural language understanding, retrieves relevant information from a vast knowledge base, and synthesizes a coherent, helpful response.
+                </p>
+                <p class="about-text">
+                    We continuously improve our system to ensure responses are accurate, up-to-date, and helpful. While we strive for perfection, we recommend verifying critical information through additional sources, especially for academic citations.
+                </p>
+            </section>
+            
+            <a href="../index.html" class="back-to-home">
+                ← Back to Research Assistant
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div>&copy; 2025 ResearchGate.in - AI-Powered Research Assistant</div>
+        <div class="footer-links">
+            <a href="/about">About</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </footer>
+</body>
+</html>

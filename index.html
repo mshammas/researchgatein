@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ResearchGate.in - AI-powered research assistant to help with your academic and research queries">
+    <meta name="keywords" content="research, AI assistant, academic research, research tool, knowledge base">
+    <meta name="author" content="ResearchGate.in">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="ResearchGate.in - AI-Powered Research Assistant">
+    <meta property="og:description" content="Get instant research assistance with our AI-powered chat interface">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://researchgate.in">
+    <meta property="og:image" content="https://researchgate.in/assets/images/og-image.jpg">
+    
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ResearchGate.in - AI-Powered Research Assistant">
+    <meta name="twitter:description" content="Get instant research assistance with our AI-powered chat interface">
+    <meta name="twitter:image" content="https://researchgate.in/assets/images/twitter-image.jpg">
+    
+    <title>ResearchGate.in - AI-Powered Research Assistant</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+    
+    <!-- Preload fonts for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <!-- Placeholder for logo image -->
+            <img src="assets/images/logo.svg" alt="ResearchGate.in Logo">
+            <span>ResearchGate.in</span>
+        </div>
+        <div class="header-actions">
+            <button class="icon-button" aria-label="Help">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-title">Research Assistant</div>
+                <div class="chat-options">
+                    <button class="icon-button" aria-label="Clear Chat">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <!-- Welcome message -->
+                <div class="welcome-message">
+                    <div class="welcome-title">Welcome to ResearchGate.in</div>
+                    <p>Ask me any research question, and I'll provide you with accurate, well-structured information.</p>
+                    <p>Try questions about scientific topics, historical events, literature reviews, methodologies, or any other research area you're interested in.</p>
+                </div>
+                
+                <!-- Example message from assistant -->
+                <div class="message assistant">
+                    <div class="message-header">
+                        <div class="avatar">R</div>
+                        <div class="message-sender">Assistant</div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello! I'm your research assistant. How can I help with your research today?</p>
+                    </div>
+                </div>
+                
+                <!-- Loading indicator (initially hidden) -->
+                <div class="message assistant" id="loading-message" style="display: none;">
+                    <div class="message-header">
+                        <div class="avatar">R</div>
+                        <div class="message-sender">Assistant</div>
+                    </div>
+                    <div class="message-content">
+                        <div class="loading">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <textarea 
+                        class="chat-input" 
+                        id="chat-input" 
+                        placeholder="Type your research question here..." 
+                        rows="1"
+                        aria-label="Type your message"
+                    ></textarea>
+                    <div class="chat-actions">
+                        <button class="attachment-button" aria-label="Attach file">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                            </svg>
+                        </button>
+                        <button class="send-button" id="send-button" aria-label="Send message" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="rate-limit-info">
+                    Limited to 10 queries per hour for non-registered users
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>&copy; 2025 ResearchGate.in - AI-Powered Research Assistant</div>
+        <div class="footer-links">
+            <a href="/about">About</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
