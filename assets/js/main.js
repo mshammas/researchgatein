@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
         "Are there any specific regions, industries, or demographics you'd like to focus on?",
         "What format do you prefer for the results? (e.g., structured report, comparison table, bullet points)",
         "Are there any sources you trust or want me to prioritize or avoid?",
-        "What language should the results be in?"
+        "What language should the results be in?",
+        "Is there any additional information, context, or specific questions you'd like to include with your research request?"
     ];
     
     // Check for saved chat history in localStorage
@@ -142,8 +143,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         // Show welcome message and explanation
-        const welcomeMessage = `
-            Thank you for choosing ResearchGate.in! To provide you with the most comprehensive and relevant research information, I'll ask you a series of 9 questions to understand your needs better.
+                    const welcomeMessage = `
+            Thank you for choosing ResearchGate.in! To provide you with the most comprehensive and relevant research information, I'll ask you a series of 10 questions to understand your needs better.
             
             This structured approach helps us collect all necessary details to deliver high-quality research tailored to your specific requirements. After completing these questions, you'll be asked for your email address where we'll send our findings within 24-48 hours.
             
@@ -165,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function askResearchQuestion(questionIndex) {
         if (questionIndex < researchQuestions.length) {
             const questionNumber = questionIndex + 1;
-            const questionMessage = `Question ${questionNumber}/9: ${researchQuestions[questionIndex]}`;
+            const questionMessage = `Question ${questionNumber}/10: ${researchQuestions[questionIndex]}`;
             addMessage(questionMessage, 'assistant');
         }
     }
