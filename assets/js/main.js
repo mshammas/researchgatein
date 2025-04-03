@@ -279,7 +279,8 @@ document.addEventListener('DOMContentLoaded', function() {
     async function sendQueryToBackend(query, email) {
         try {
             // API endpoint - replace with your actual backend URL in production
-            const apiUrl = 'http://localhost:3000/api/submit-query'; // For local testing
+            // const apiUrl = 'http://localhost:3000/api/submit-query'; // For local testing
+            const apiUrl = 'https://researchgatein-backend.onrender.com/api/submit-query' // render.com web service
             // const apiUrl = 'https://api.researchgate.in/api/submit-query'; // For production
             
             // Send the request to the backend
