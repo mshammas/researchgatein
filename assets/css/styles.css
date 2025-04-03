@@ -63,6 +63,18 @@ header {
     width: auto;
 }
 
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+.logo a:hover {
+    opacity: 0.9;
+}
+
 .header-actions {
     display: flex;
     gap: 1rem;
