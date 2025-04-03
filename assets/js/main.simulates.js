@@ -72,23 +72,12 @@ document.addEventListener('DOMContentLoaded', function() {
         chatInput.style.height = 'auto';
         sendButton.disabled = true;
         
-        // Check if this is the first message - if so, we'll request email after this
-        const isFirstMessage = chatHistory.filter(msg => msg.role === 'user').length === 1;
+        // Show loading indicator
+        loadingMessage.style.display = 'flex';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
         
-        if (isFirstMessage) {
-            // Show email collection prompt after a short delay
-            setTimeout(() => {
-                requestEmailAddress(message);
-            }, 1000);
-        } else {
-            // For subsequent messages, use the existing flow
-            // Show loading indicator
-            loadingMessage.style.display = 'flex';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            // Make API request to get response
-            fetchAssistantResponse(message);
-        }
+        // Make API request to get response
+        fetchAssistantResponse(message);
     }
     
     /**
@@ -202,122 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             // Italic text with *
             .replace(/\*(.*?)\*/g, '<em>$1</em>');
-    }
-    
-    /**
-     * Request email address from the user
-     * @param {string} query - The research query submitted
-     */
-    function requestEmailAddress(query) {
-        // Add the email request message
-        const emailRequestMessage = `
-            Thank you for your research query. To provide you with a thorough response, our team will need some time to research this topic. 
-            Please provide your email address so we can send you our comprehensive findings:
-            <div class="email-collection-form" id="email-form">
-                <input type="email" id="email-input" placeholder="Your email address" class="email-input">
-                <button id="submit-email" class="submit-email-button">Submit</button>
-            </div>
-        `;
-        
-        addMessage(emailRequestMessage, 'assistant');
-        
-        // Set up email submission handler
-        setTimeout(() => {
-            const emailInput = document.getElementById('email-input');
-            const submitEmailButton = document.getElementById('submit-email');
-            
-            if (emailInput && submitEmailButton) {
-                emailInput.focus();
-                
-                submitEmailButton.addEventListener('click', () => {
-                    submitResearchRequest(query, emailInput.value);
-                });
-                
-                emailInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        submitResearchRequest(query, emailInput.value);
-                    }
-                });
-            }
-        }, 100);
-    }
-    
-    /**
-     * Submit the research request with email
-     * @param {string} query - The research query
-     * @param {string} email - The user's email address
-     */
-    function submitResearchRequest(query, email) {
-        if (!email || !email.includes('@') || !email.includes('.')) {
-            alert('Please enter a valid email address');
-            return;
-        }
-        
-        // Remove the email form
-        const emailForm = document.getElementById('email-form');
-        if (emailForm) {
-            emailForm.remove();
-        }
-        
-        // Show confirmation message
-        const confirmationMessage = `
-            Thank you! We've received your research query and will send our findings to ${email} within 24-48 hours. 
-            Feel free to submit additional questions or details that might help with our research.
-        `;
-        
-        addMessage(confirmationMessage, 'assistant');
-        
-        // Here you would send the query and email to your backend
-        sendQueryToBackend(query, email);
-    }
-    
-    /**
-     * Send the query and email to the backend
-     * @param {string} query - The research query
-     * @param {string} email - The user's email address
-     */
-    async function sendQueryToBackend(query, email) {
-        try {
-            // API endpoint - replace with your actual backend URL in production
-            const apiUrl = 'http://localhost:3000/api/submit-query'; // For local testing
-            // const apiUrl = 'https://api.researchgate.in/api/submit-query'; // For production
-            
-            // Send the request to the backend
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ query, email })
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to submit query');
-            }
-            
-            console.log('Research query submitted successfully:', data);
-            
-            // You can store the queryId in localStorage for future reference if needed
-            const queryHistory = JSON.parse(localStorage.getItem('queryHistory') || '[]');
-            queryHistory.push({
-                id: data.queryId,
-                query,
-                email,
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem('queryHistory', JSON.stringify(queryHistory));
-            
-        } catch (error) {
-            console.error('Error submitting research query:', error);
-            
-            // Show error message to user
-            addMessage(
-                'Sorry, we encountered an issue submitting your query. Please try again or contact support.',
-                'assistant'
-            );
-        }
     }
     
     /**
