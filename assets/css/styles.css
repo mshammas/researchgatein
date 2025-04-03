@@ -58,17 +58,23 @@ header {
     color: var(--primary-color);
 }
 
-.logo img {
-    height: 2rem;
-    width: auto;
-}
-
 .logo a {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
     color: var(--primary-color);
+}
+
+.logo img {
+    height: 2rem;
+    width: auto;
+    display: block; /* Helps with alignment */
+}
+
+.logo span {
+    font-weight: 700;
+    font-size: 1.25rem;
 }
 
 .logo a:hover {
